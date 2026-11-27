@@ -419,7 +419,7 @@ function mapView(){
     const fl={walk:'w',car:'d',transit:'r'}[S.days[D].mode]||'d';
     const src=pts.length>=2?'https://maps.google.com/maps?saddr='+pts[0]+'&daddr='+pts.slice(1).join('+to:')+'&dirflg='+fl+'&hl=ko&output=embed':'';
     if(src!==curSrc){curSrc=src;$('gframe').src=src||'about:blank'}
-    $('capT').textContent=pts.length>=2?'오늘 동선 전체 경로예요. 위 "주 이동수단"에 맞춰 길을 찾아요. 경로가 안 나오면 이동수단을 차·택시로 바꿔 보세요.':'좌표가 있는 장소가 2곳 이상이어야 경로를 그릴 수 있어요.'}
+    $('capT').textContent=pts.length>=2?'오늘 동선 전체 경로예요. 아래 "주 이동수단"에 맞춰 길을 찾아요. 경로가 안 나오면 이동수단을 차·택시로 바꿔 보세요.':'좌표가 있는 장소가 2곳 이상이어야 경로를 그릴 수 있어요.'}
   else if(g){const src=s&&has(s)?'https://maps.google.com/maps?q='+s.lat+','+s.lng+'&z=15&hl=ko&output=embed':s&&s.name?'https://maps.google.com/maps?q='+encodeURIComponent(s.name)+'&z=14&hl=ko&output=embed':'';
     if(src!==curSrc){curSrc=src;$('gframe').src=src||'about:blank'}
     $('capT').textContent=s?(SEL+1)+'번 '+(s.name||'')+' 위치예요. 일정의 번호 구슬을 누르면 다른 장소로 바뀌어요.':'장소를 추가하면 구글지도에 표시돼요.'}
