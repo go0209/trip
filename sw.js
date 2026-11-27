@@ -1,5 +1,5 @@
 // 인터넷이 될 때는 항상 최신 파일을, 안 될 때는 마지막으로 받아 둔 파일을 보여줘요.
-const CACHE = 'trip-app-v34';
+const CACHE = 'trip-app-v35';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-180.png', './balloon-1.webp?v=2', './balloon-2.webp?v=5', './balloon-3.webp?v=3', './fonts/Maplestory_Light.woff2', './fonts/Maplestory_Bold.woff2'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))); self.clients.claim(); });
