@@ -13,18 +13,20 @@
 <meta name="apple-mobile-web-app-title" content="가나자와여행">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Dongle:wght@700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dongle:wght@700&display=swap" rel="stylesheet">
 <style>
+@font-face{font-family:Maplestory;font-weight:400;font-display:swap;src:url(fonts/Maplestory_Light.woff2) format('woff2')}
+@font-face{font-family:Maplestory;font-weight:700;font-display:swap;src:url(fonts/Maplestory_Bold.woff2) format('woff2')}
 /* VOICE: 말랑하고 귀여운 키치, 그래도 쓰기 편한 도구
    IDEA: 말랑 클레이 장난감 — 모든 버튼·카드가 부풀어 오른 점토 덩어리, 표면엔 유광 코팅
    PICTURE: 버터색 점토판 위 약도, 통통 튀는 유광 구슬 핀과 말랑한 튜브 경로
-   COLOUR and TYPE: 피치 #FF9C7E 주색, 버터 #FFE6A8 보조, 라벤더 #C9B8FF·하늘 #A9DCFF 포인트, 잉크 #4A2D5E / Dongle + Gowun Dodum
+   COLOUR and TYPE: 피치 #FF9C7E 주색, 버터 #FFE6A8 보조, 라벤더 #C9B8FF·하늘 #A9DCFF 포인트, 잉크 #4A2D5E / Dongle + Maplestory
    LAYOUT: 피치 머리띠(떠다니는 구슬)+탭 → 지도|일정 (좁으면 위아래) → 라벤더 경비 덩어리 → 정보·백업 */
 :root{color-scheme:light;--ink:#4A2D5E;--peach:#FF9C7E;--peach2:#FFC9B5;--butter:#FFE6A8;--lav:#C9B8FF;--sky:#A9DCFF;--bg:#FFF4EC;--mute:#6E5480;
 --spring:cubic-bezier(.3,1.7,.5,1);
 --clay:0 10px 0 var(--d,#EAD2C6),0 18px 26px rgba(74,45,94,.16),inset -6px -9px 16px rgba(74,45,94,.17),inset 7px 9px 14px rgba(255,255,255,.85)}
 *{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Gowun Dodum",system-ui,sans-serif;overflow-x:clip;font-variant-numeric:tabular-nums}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Maplestory,system-ui,sans-serif;overflow-x:clip;font-variant-numeric:tabular-nums}
 .band{padding:clamp(20px,4vw,48px) max(5vw,16px)}
 .in{max-width:1240px;margin:0 auto}
 h1{font-family:Dongle,sans-serif;font-weight:700;font-size:clamp(69px,9vw,102px);line-height:0.95;margin:14px 0 0;text-wrap:balance;color:#fff;text-shadow:0 2px 0 #F7B29C,0 4px 0 #F2A189,0 6px 0 #EA9178,0 8px 0 #E08368,0 14px 18px rgba(74,45,94,.28)}
@@ -61,7 +63,7 @@ h2{font-family:Dongle,sans-serif;font-weight:700;line-height:.95;font-size:39px;
 .top p{margin:10px 0 0;font-size:15px}
 .tabs{display:flex;gap:8px;overflow-x:auto;margin-top:20px;padding-top:12px;position:relative}
 .tabs button{flex:1 0 96px;border:0;border-radius:24px 24px 0 0;padding:8px 12px;min-height:52px;font-family:Dongle,sans-serif;font-weight:700;font-size:26px;line-height:0.95;background:linear-gradient(#FFE3D8,#FFCDB9);color:var(--ink);cursor:pointer;box-shadow:inset 4px 6px 10px rgba(255,255,255,.7);transition:transform .3s var(--spring)}
-.tabs button small{display:block;font:11px "Gowun Dodum",sans-serif}
+.tabs button small{display:block;font:11px Maplestory,sans-serif}
 .tabs button[aria-selected=true]{background:var(--bg);margin-top:-12px;min-height:64px}
 button,select,input,textarea{font:inherit;font-size:16px;color:var(--ink)}
 .btn{min-height:48px;padding:8px 16px;border-radius:22px;background:radial-gradient(circle at 30% 22%,#fff,#FFF3EC 60%,#F6DED2);cursor:pointer;font-family:Dongle,sans-serif;font-weight:700;line-height:.95;font-size:26px;transition:transform .35s var(--spring),box-shadow .2s;--d:#EAD2C6}
