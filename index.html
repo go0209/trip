@@ -181,6 +181,7 @@ td.n,th.n{text-align:right;white-space:nowrap}
 .shade{position:fixed;inset:0;background:rgba(74,45,94,.35);backdrop-filter:blur(3px);z-index:5}
 .sheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,100%);max-height:88vh;overflow:auto;background:var(--bg);border-radius:36px 36px 0 0;padding:24px 18px 28px;z-index:6;box-shadow:0 -10px 30px rgba(74,45,94,.25),inset 0 6px 10px rgba(255,255,255,.8)}
 .sheet .r{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.addr{display:flex;gap:8px}.addr input{flex:1;min-width:0}.addr .btn{flex:none;font-size:20px;padding:6px 12px;min-height:48px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 [hidden]{display:none!important}
 /* 움직임 */
@@ -282,8 +283,10 @@ h1{animation:wob 1.1s var(--spring) both}
 <div class="sheet" id="sheet" hidden role="dialog" aria-labelledby="shT">
   <h2 id="shT">장소 수정</h2>
   <label class="f">장소 이름<input id="eName"></label>
+  <label class="f">주소 또는 장소 이름<span class="addr"><input id="eAddr" placeholder="예: 金沢市広岡1-9-28 또는 Kenrokuen"><button type="button" class="btn gl lem" id="eFind">좌표 찾기</button></span></label>
+  <p class="note" id="eFound" style="margin-top:-4px">주소를 넣고 좌표 찾기를 누르면 아래 좌표가 자동으로 채워져요.</p>
   <label class="f">좌표 (위도, 경도)<input id="eCoord" placeholder="예: 36.3299, 136.4212" inputmode="text"></label>
-  <p class="note" style="margin-top:-4px">Google 지도에서 장소를 길게 누르면 맨 위에 36.33, 136.42 같은 숫자가 나와요. 그걸 복사해 붙여넣으세요. 짧은 공유 링크(goo.gl)는 좌표가 없어 안 돼요.</p>
+  <p class="note" style="margin-top:-4px">좌표를 직접 넣어도 돼요. Google 지도에서 장소를 길게 누른 뒤 아래 정보 창을 위로 올리면 36.57, 136.64 같은 숫자가 있어요.</p>
   <p class="err" id="eErr"></p>
   <div class="two"><label class="f">머무는 시간(분)<input type="number" id="eStay" min="0" inputmode="numeric"></label><label class="f">비용(엔)<input type="number" id="eCost" min="0" inputmode="numeric"></label></div>
   <label class="f">메모<textarea id="eMemo" rows="2"></textarea></label>
@@ -403,7 +406,7 @@ function optimize(){
 
 function openSheet(i){
   EI=i;delArm=false;const s=i>=0?S.days[D].stops[i]:{name:'',lat:null,lng:null,stay:60,cost:0,memo:''};
-  $('shT').textContent=i>=0?'장소 수정':'장소 추가';$('eName').value=s.name||'';$('eCoord').value=has(s)?s.lat+', '+s.lng:'';$('eStay').value=s.stay??60;$('eCost').value=s.cost??0;$('eMemo').value=s.memo||'';
+  $('shT').textContent=i>=0?'장소 수정':'장소 추가';$('eName').value=s.name||'';$('eCoord').value=has(s)?s.lat+', '+s.lng:'';$('eStay').value=s.stay??60;$('eCost').value=s.cost??0;$('eMemo').value=s.memo||'';$('eAddr').value=s.addr||'';$('eFound').textContent='주소를 넣고 좌표 찾기를 누르면 아래 좌표가 자동으로 채워져요.';
   $('eDay').innerHTML=S.days.map((d,j)=>`<option value="${j}"${j===D?' selected':''}>${esc(dayLabel(j))}</option>`).join('');
   $('eMove').hidden=i<0;$('eDel').textContent='삭제';$('eErr').textContent='';
   $('sheet').hidden=$('shade').hidden=false;$('eName').focus();
@@ -453,8 +456,16 @@ $('opt').onclick=optimize;
 $('undo').onclick=()=>{if(!H.length)return;S=JSON.parse(H.pop());if(D>=S.days.length)D=S.days.length-1;dirty=true;persist();msg('한 단계 되돌렸어요.');render()};
 $('shade').onclick=closeSheet;$('eCancel').onclick=closeSheet;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('sheet').hidden)closeSheet()});
+$('eFind').onclick=()=>{const q=$('eAddr').value.trim();if(!q){$('eFound').textContent='먼저 주소나 장소 이름을 넣어 주세요.';return}
+  $('eFind').disabled=true;$('eFound').textContent='찾는 중…';
+  fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=jp&accept-language=ko&q='+encodeURIComponent(q)).then(r=>r.json()).then(a=>{
+    if(!a||!a.length){$('eFound').textContent='못 찾았어요. 일본어 주소(예: 金沢市広岡1-9-28)나 영어 이름(예: Kenrokuen)으로 다시 해 보세요.';return}
+    const lat=(+a[0].lat).toFixed(5),lng=(+a[0].lon).toFixed(5);$('eCoord').value=lat+', '+lng;$('eErr').textContent='';
+    $('eFound').textContent='찾았어요: '+String(a[0].display_name||'').slice(0,80)+' — 위치가 맞는지 확인해 주세요.';
+    if(!$('eName').value.trim())$('eName').value=q;
+  }).catch(()=>{$('eFound').textContent='인터넷 연결을 확인하고 다시 눌러 주세요.'}).finally(()=>{$('eFind').disabled=false})};
 $('eOk').onclick=()=>{const c=parseCoord($('eCoord').value);if(!c){$('eErr').textContent='좌표 형식을 확인해 주세요. 예: 36.3299, 136.4212';return}
-  const s={name:$('eName').value.trim()||'이름 없음',lat:c.lat,lng:c.lng,stay:Math.max(0,+$('eStay').value||0),cost:Math.max(0,+$('eCost').value||0),memo:$('eMemo').value.trim()},td=+$('eDay').value;
+  const s={name:$('eName').value.trim()||'이름 없음',lat:c.lat,lng:c.lng,stay:Math.max(0,+$('eStay').value||0),cost:Math.max(0,+$('eCost').value||0),memo:$('eMemo').value.trim(),addr:$('eAddr').value.trim()},td=+$('eDay').value;
   mut(()=>{const list=S.days[D].stops;if(EI>=0){if(td===D)list[EI]=s;else{list.splice(EI,1);const t=S.days[td].stops;t.splice(S.days[td].fixEnd&&t.length?t.length-1:t.length,0,s)}}else{const t=S.days[td].stops;t.splice(S.days[td].fixEnd&&t.length>1?t.length-1:t.length,0,s)}});closeSheet()};
 const mv=d=>{const l=S.days[D].stops,j=EI+d;if(j<0||j>=l.length)return;mut(()=>{[l[EI],l[j]]=[l[j],l[EI]]});EI=j};
 $('eUp').onclick=()=>mv(-1);$('eDown').onclick=()=>mv(1);
